@@ -1,16 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskFlow - Simple, Modern Task Management</title>
-    <meta name="description" content="A simple, modern task management web application with To Do, In Progress, and Done columns backed by Firebase Firestore." />
-    <meta property="og:title" content="TaskFlow - Simple, Modern Task Management" />
-    <meta property="og:description" content="A simple, modern task management web application with To Do, In Progress, and Done columns backed by Firebase Firestore." />
+    <title>TaskFlow — Modern Kanban & Productivity</title>
+    <meta name="description" content="A sleek, modern task management and Kanban board application with real-time Firebase cloud synchronization." />
+    <meta property="og:title" content="TaskFlow — Modern Kanban & Productivity" />
+    <meta property="og:description" content="Manage your tasks effortlessly with real-time cloud sync, priority tags, and modern dark mode support." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <script>
+      // Prevent theme flash on load
+      (function() {
+        try {
+          var theme = localStorage.getItem('taskflow_theme');
+          var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body>
+  <body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen antialiased selection:bg-indigo-500/20 selection:text-indigo-600 dark:selection:bg-indigo-500/30 dark:selection:text-indigo-300">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

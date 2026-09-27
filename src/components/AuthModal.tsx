@@ -6,7 +6,19 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
-import { X, Mail, Lock, User as UserIcon, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import {
+  X,
+  Mail,
+  Lock,
+  User as UserIcon,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Sparkles,
+  ShieldCheck,
+} from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -24,6 +36,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [mode, setMode] = useState<'signup' | 'signin'>(defaultMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -44,7 +57,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       if (err.code === 'auth/popup-closed-by-user') {
         setError('Sign-in popup was closed before completing. Please try again.');
       } else if (err.code === 'auth/cancelled-popup-request') {
-        // Ignored, user opened multiple
+        // Ignored
       } else if (err.code === 'auth/popup-blocked') {
         setError('Popup was blocked by your browser. Please allow popups for this site.');
       } else {
@@ -86,7 +99,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       console.error('Email Auth Error:', err);
       if (err.code === 'auth/email-already-in-use') {
         setError('An account with this email already exists. Try signing in instead.');
-      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+      } else if (
+        err.code === 'auth/invalid-credential' ||
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/user-not-found'
+      ) {
         setError('Invalid email or password. Please check your credentials.');
       } else if (err.code === 'auth/invalid-email') {
         setError('Please enter a valid email address.');
@@ -101,15 +118,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden"
+        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-zinc-800 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Top ambient banner gradient */}
+        <div className="h-2 bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500" />
+
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -118,28 +138,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-              {mode === 'signup' ? 'Create your TaskFlow account' : 'Welcome back to TaskFlow'}
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3 shadow-xs">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
+              {mode === 'signup' ? 'Create your account' : 'Welcome back'}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
               {mode === 'signup'
-                ? 'Sign up to keep your tasks synchronized across all devices.'
-                : 'Sign in to access your saved tasks and stages.'}
+                ? 'Sync and protect your tasks effortlessly in real-time.'
+                : 'Sign in to access your boards and active projects.'}
             </p>
           </div>
 
-          {/* Mode Tabs */}
-          <div className="flex p-1 mb-6 bg-slate-100 rounded-xl">
+          {/* Mode Switcher Tabs */}
+          <div className="flex p-1 mb-6 bg-slate-100 dark:bg-zinc-800/80 rounded-2xl">
             <button
               type="button"
               onClick={() => {
                 setMode('signup');
                 setError(null);
               }}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer ${
                 mode === 'signup'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-sm'
+                  : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
               }`}
             >
               Sign Up
@@ -150,10 +173,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 setMode('signin');
                 setError(null);
               }}
-              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer ${
                 mode === 'signin'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-100 shadow-sm'
+                  : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
               }`}
             >
               Sign In
@@ -162,7 +185,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+            <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
               <span>{error}</span>
             </div>
@@ -173,10 +196,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading || isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded-xl border border-slate-300 hover:border-slate-400 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed group"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-zinc-800/90 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-semibold rounded-2xl border border-slate-200 dark:border-zinc-700 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed group"
           >
             {isGoogleLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin text-sky-600" />
+              <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
             ) : (
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                 <path
@@ -197,16 +220,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 />
               </svg>
             )}
-            <span className="text-sm font-semibold text-slate-800">
+            <span className="text-sm font-semibold">
               {isGoogleLoading ? 'Connecting to Google...' : 'Continue with Google'}
             </span>
           </button>
 
           {/* Divider */}
           <div className="relative my-5 flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-3 text-xs uppercase tracking-wider text-slate-400 font-medium">
-              or with email
+            <div className="border-t border-slate-200 dark:border-zinc-800 w-full" />
+            <span className="bg-white dark:bg-zinc-900 px-3 text-[11px] uppercase tracking-wider text-slate-400 dark:text-zinc-500 font-semibold">
+              or continue with email
             </span>
           </div>
 
@@ -214,61 +237,68 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <form onSubmit={handleEmailAuth} className="space-y-3.5">
             {mode === 'signup' && (
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
                   Full Name
                 </label>
                 <div className="relative">
-                  <UserIcon className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                  <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Alex Morgan"
-                    className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 transition-all"
+                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@example.com"
-                  className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 transition-all"
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 rounded-xl text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
-              <p className="mt-1 text-[11px] text-slate-400">At least 6 characters</p>
+              <p className="mt-1 text-[11px] text-slate-400 dark:text-zinc-500">At least 6 characters</p>
             </div>
 
             <button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full py-2.5 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-medium text-sm rounded-xl shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 disabled:from-slate-200 disabled:to-slate-200 dark:disabled:from-zinc-800 dark:disabled:to-zinc-800 text-white font-semibold text-sm rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -276,15 +306,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <span>Processing...</span>
                 </>
               ) : (
-                <span>{mode === 'signup' ? 'Create Account' : 'Sign In'}</span>
+                <span>{mode === 'signup' ? 'Create Free Account' : 'Sign In'}</span>
               )}
             </button>
           </form>
 
           {/* Quick value reassurance */}
-          <div className="mt-6 pt-5 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Automatic real-time sync with Firebase</span>
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <span>Real-time cloud backup powered by Firebase</span>
           </div>
         </div>
       </div>
