@@ -1,0 +1,6 @@
+{
+  "name": "TaskFlow",
+  "description": "A simple, modern task management web application with To Do, In Progress, and Done columns backed by Firebase Firestore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

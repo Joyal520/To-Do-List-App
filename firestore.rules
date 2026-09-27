@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /tasks/{taskId} {
+      // Allow read and write for the tasks collection in this task management applet
+      allow read, write: if true;
+    }
+  }
+}

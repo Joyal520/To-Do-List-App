@@ -1,0 +1,24 @@
+{
+  "entities": {
+    "Task": {
+      "title": "Task",
+      "description": "A task item in TaskFlow",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title or content of the task" },
+        "status": { "type": "string", "enum": ["todo", "in-progress", "done"], "description": "Status stage of the task" },
+        "userId": { "type": "string", "description": "User ID of the task creator" },
+        "userEmail": { "type": "string", "description": "Email address of the task creator" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp in ISO format" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp in ISO format" }
+      },
+      "required": ["title", "status", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Collection of tasks"
+    }
+  }
+}
