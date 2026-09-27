@@ -13,11 +13,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <script>
-      // Prevent theme flash on load
+      // Prevent theme flash on load (defaults to light mode)
       (function() {
         try {
           var theme = localStorage.getItem('taskflow_theme');
-          var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var isDark = theme === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
           } else {

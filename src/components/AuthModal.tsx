@@ -18,6 +18,7 @@ import {
   EyeOff,
   Sparkles,
   ShieldCheck,
+  ExternalLink,
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -41,6 +42,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUnauthorizedDomain, setIsUnauthorizedDomain] = useState(false);
 
   if (!isOpen) return null;
 
@@ -48,13 +50,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setError(null);
+    setIsUnauthorizedDomain(false);
     try {
       await signInWithPopup(auth, googleProvider);
       onSuccess?.();
       onClose();
     } catch (err: any) {
       console.error('Google Auth Error:', err);
-      if (err.code === 'auth/popup-closed-by-user') {
+      if (err.code === 'auth/unauthorized-domain') {
+        setIsUnauthorizedDomain(true);
+        setError(
+          'Google Sign-in is restricted to authorized domains. You can use Email Sign In below, or continue in Guest Mode (your tasks are saved locally)!'
+        );
+      } else if (err.code === 'auth/popup-closed-by-user') {
         setError('Sign-in popup was closed before completing. Please try again.');
       } else if (err.code === 'auth/cancelled-popup-request') {
         // Ignored
@@ -83,6 +91,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     setError(null);
+    setIsUnauthorizedDomain(false);
 
     try {
       if (mode === 'signup') {
@@ -118,9 +127,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-zinc-800 overflow-hidden"
+        className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-zinc-800 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top ambient banner gradient */}
@@ -146,7 +155,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-zinc-400">
               {mode === 'signup'
-                ? 'Sync and protect your tasks effortlessly in real-time.'
+                ? 'Sync and protect your tasks effortlessly.'
                 : 'Sign in to access your boards and active projects.'}
             </p>
           </div>
@@ -158,6 +167,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={() => {
                 setMode('signup');
                 setError(null);
+                setIsUnauthorizedDomain(false);
               }}
               className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer ${
                 mode === 'signup'
@@ -172,6 +182,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={() => {
                 setMode('signin');
                 setError(null);
+                setIsUnauthorizedDomain(false);
               }}
               className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer ${
                 mode === 'signin'
@@ -185,9 +196,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
-              <span>{error}</span>
+            <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs flex flex-col gap-2">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
+                <span>{error}</span>
+              </div>
+              {isUnauthorizedDomain && (
+                <div className="mt-1 p-2 bg-white/80 dark:bg-zinc-900/80 rounded-xl border border-rose-200/60 dark:border-rose-900/40 text-[11px] text-slate-600 dark:text-zinc-400">
+                  <p className="font-semibold text-slate-800 dark:text-zinc-200 mb-1">To enable Google Sign-In on GitHub Pages:</p>
+                  <p>Add <code className="bg-slate-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400 font-mono">joyal520.github.io</code> to <strong>Firebase Console ➔ Authentication ➔ Settings ➔ Authorized Domains</strong>.</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -196,7 +215,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading || isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-zinc-800/90 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-semibold rounded-2xl border border-slate-200 dark:border-zinc-700 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed group"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-750 text-slate-700 dark:text-zinc-200 font-semibold rounded-2xl border border-slate-300 dark:border-zinc-700 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed group"
           >
             {isGoogleLoading ? (
               <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
@@ -298,7 +317,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 disabled:from-slate-200 disabled:to-slate-200 dark:disabled:from-zinc-800 dark:disabled:to-zinc-800 text-white font-semibold text-sm rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600 text-white font-semibold text-sm rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -314,7 +333,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Quick value reassurance */}
           <div className="mt-6 pt-5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-zinc-400">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Real-time cloud backup powered by Firebase</span>
+            <span>Tasks saved with real-time cloud and local offline sync</span>
           </div>
         </div>
       </div>
