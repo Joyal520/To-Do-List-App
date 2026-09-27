@@ -50,7 +50,7 @@ export default function App() {
     return [
       {
         id: 'sample-1',
-        title: 'Explore the modern liquid glassmorphism design',
+        title: 'Explore the liquid glassmorphism design',
         status: 'todo',
         priority: 'high',
         tag: 'Design',
@@ -59,7 +59,7 @@ export default function App() {
       },
       {
         id: 'sample-2',
-        title: 'Complete a task to trigger confetti celebration',
+        title: 'Complete your first task to test confetti',
         status: 'in-progress',
         priority: 'medium',
         tag: 'QuickStart',
@@ -183,7 +183,7 @@ export default function App() {
     }
   }, [currentUser, authLoading]);
 
-  // Add Task (Immediate Local Save + Background Firestore sync)
+  // Add Task
   const handleAddTask = async (
     title: string,
     options?: {
@@ -214,11 +214,9 @@ export default function App() {
       userEmail: currentEmail,
     };
 
-    // 1. Immediately update UI & LocalStorage
     setTasks((prev) => [newTask, ...prev]);
     addToast('success', `Added task "${trimmed}"`);
 
-    // 2. Sync to Firestore if available
     try {
       const docRef = await addDoc(collection(db, 'tasks'), {
         title: newTask.title,
@@ -411,30 +409,30 @@ export default function App() {
   const userFirst = currentUser?.displayName?.split(' ')[0] || (currentUser?.email ? currentUser.email.split('@')[0] : 'Guest');
 
   return (
-    <div className="relative min-h-screen bg-[#fafbfe] text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="relative min-h-screen bg-[#f6f8fc] text-slate-900 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Ambient Liquid Glow Background Orbs */}
       <div className="liquid-blob-1" />
       <div className="liquid-blob-2" />
       <div className="liquid-blob-3" />
 
       {/* Floating Glass Navigation Header */}
-      <div className="sticky top-0 z-30 px-4 sm:px-6 pt-3 pb-2">
+      <div className="sticky top-0 z-30 px-4 sm:px-6 pt-3.5 pb-2">
         <header className="max-w-7xl mx-auto glass-panel rounded-2xl px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4 transition-all">
           {/* Logo & Branding */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white shadow-sm shadow-indigo-500/20">
-              <CheckSquare2 className="w-5 h-5 stroke-[2.4]" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-sky-600 flex items-center justify-center text-white shadow-sm shadow-indigo-600/30">
+              <CheckSquare2 className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold tracking-tight text-slate-900 leading-tight">
+                <h1 className="text-lg font-extrabold tracking-tight text-slate-950 leading-tight">
                   TaskFlow
                 </h1>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50/80 text-indigo-700 border border-indigo-200/80">
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-100 text-indigo-900 border border-indigo-300">
                   v2.0
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-medium">
+              <p className="text-[11px] text-slate-600 font-semibold">
                 Modern Task Management
               </p>
             </div>
@@ -442,19 +440,19 @@ export default function App() {
 
           {/* Search Box (Desktop) */}
           <div className="hidden md:flex flex-1 max-w-md mx-4 relative items-center">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 pointer-events-none" />
             <input
               ref={searchInputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks, tags... (Press /)"
-              className="w-full pl-9 pr-8 py-1.5 bg-white/70 hover:bg-white focus:bg-white border border-slate-200/80 focus:border-indigo-400 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-3 focus:ring-indigo-500/10 transition-all shadow-2xs"
+              className="w-full pl-9 pr-8 py-2 bg-white/90 focus:bg-white border border-slate-300 focus:border-indigo-600 rounded-xl text-xs sm:text-sm text-slate-950 font-semibold placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 transition-all shadow-2xs"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 text-slate-400 hover:text-slate-600 p-0.5"
+                className="absolute right-2.5 text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -464,8 +462,8 @@ export default function App() {
           {/* Right Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Cloud Sync Status Pill */}
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 border border-white/90 text-xs font-semibold text-slate-700 shadow-2xs">
-              <Database className="w-3.5 h-3.5 text-indigo-600" />
+            <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-bold text-slate-900 shadow-2xs">
+              <Database className="w-3.5 h-3.5 text-indigo-700" />
               <span>{isFirestoreConnected ? 'Cloud Synced' : 'Local Storage'}</span>
               <span className={`w-2 h-2 rounded-full ${isFirestoreConnected ? 'bg-emerald-500 animate-pulse' : 'bg-emerald-500'}`}></span>
             </div>
@@ -473,7 +471,7 @@ export default function App() {
             {/* Keyboard Shortcuts Trigger */}
             <button
               onClick={() => setIsShortcutsOpen(true)}
-              className="hidden sm:inline-flex p-2 rounded-xl text-slate-500 hover:text-slate-800 bg-white/60 hover:bg-white border border-white/90 transition-colors cursor-pointer shadow-2xs"
+              className="hidden sm:inline-flex p-2 rounded-xl text-slate-700 hover:text-slate-950 bg-white/90 hover:bg-white border border-slate-300 transition-colors cursor-pointer shadow-2xs"
               title="Keyboard shortcuts (?)"
             >
               <Keyboard className="w-4 h-4" />
@@ -494,54 +492,54 @@ export default function App() {
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
         {/* Mobile Search */}
         <div className="md:hidden mb-4 relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="w-full pl-9 pr-8 py-2.5 bg-white/80 border border-slate-200/80 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            className="w-full pl-9 pr-8 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-950 placeholder-slate-400 focus:outline-none focus:border-indigo-600"
           />
         </div>
 
         {/* Welcome / Progress Hero Section */}
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel p-5 sm:p-6 rounded-3xl">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-950 flex items-center gap-2">
               <span>Hello, {userFirst}!</span>
               {completionPercentage === 100 && tasks.length > 0 && (
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> All completed!
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 font-extrabold flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-700" /> All completed!
                 </span>
               )}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+            <p className="text-xs sm:text-sm text-slate-700 mt-1 font-semibold">
               {tasks.length === 0
-                ? "No tasks yet. Create a task below to get started!"
+                ? "No tasks yet. Create your first task below!"
                 : `${totalCompletedCount} of ${tasks.length} tasks completed (${completionPercentage}%) • Saved automatically`}
             </p>
           </div>
 
-          {/* Progress Visualization & Glass Counter Pills */}
+          {/* Progress Visualization & High Contrast Pills */}
           {tasks.length > 0 && (
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 min-w-[280px]">
-              {/* Refined Glass Progress Bar */}
-              <div className="w-full sm:w-44 bg-slate-100/90 rounded-full h-2.5 overflow-hidden border border-slate-200/60 p-0.5 shadow-inner">
+              {/* Refined Progress Bar */}
+              <div className="w-full sm:w-44 bg-slate-200 rounded-full h-3 overflow-hidden border border-slate-300 p-0.5 shadow-inner">
                 <div
-                  className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-emerald-500 h-full rounded-full transition-all duration-500 ease-out shadow-xs"
+                  className="bg-gradient-to-r from-indigo-700 via-indigo-600 to-emerald-600 h-full rounded-full transition-all duration-500 ease-out shadow-xs"
                   style={{ width: `${completionPercentage}%` }}
                 />
               </div>
 
-              {/* Glass Counter Pills */}
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 border border-amber-500/20 shadow-2xs">
+              {/* Counter Pills */}
+              <div className="flex items-center gap-2 text-xs font-extrabold">
+                <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
                   {tasks.filter((t) => t.status === 'todo').length} TO DO
                 </span>
-                <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-800 border border-sky-500/20 shadow-2xs">
+                <span className="px-3 py-1 rounded-full bg-sky-100 text-sky-950 border border-sky-300 shadow-2xs">
                   {tasks.filter((t) => t.status === 'in-progress').length} IN PROGRESS
                 </span>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-800 border border-emerald-500/20 shadow-2xs">
+                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 border border-emerald-300 shadow-2xs">
                   {totalCompletedCount} DONE
                 </span>
               </div>
@@ -556,8 +554,8 @@ export default function App() {
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-xs">
           {/* Priority filter pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-slate-400 font-semibold mr-1 flex items-center gap-1">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" /> Filter:
+            <span className="text-slate-700 font-bold mr-1 flex items-center gap-1">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-700" /> Filter:
             </span>
 
             {(['all', 'urgent', 'high', 'medium', 'low'] as FilterPriority[]).map((p) => {
@@ -567,10 +565,10 @@ export default function App() {
                   type="button"
                   key={p}
                   onClick={() => setFilterPriority(p)}
-                  className={`px-3 py-1 rounded-full font-semibold capitalize transition-all cursor-pointer border ${
+                  className={`px-3.5 py-1.5 rounded-full font-bold capitalize transition-all cursor-pointer border ${
                     isSelected
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                      : 'bg-white/70 hover:bg-white text-slate-600 border-white/90 hover:text-slate-900 shadow-2xs'
+                      ? 'liquid-btn text-white border-transparent shadow-md'
+                      : 'bg-white/90 hover:bg-white text-slate-800 border-slate-300 hover:text-slate-950 hover:border-slate-400 shadow-2xs'
                   }`}
                 >
                   {p === 'all' ? 'All Priorities' : p}
@@ -581,11 +579,11 @@ export default function App() {
 
           {/* Sort Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-semibold">Sort by:</span>
+            <span className="text-slate-700 font-bold">Sort by:</span>
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value as SortOption)}
-              className="bg-white/80 border border-white/90 rounded-full px-3 py-1 text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-400 cursor-pointer shadow-2xs"
+              className="bg-white border border-slate-300 rounded-full px-3.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-indigo-600 cursor-pointer shadow-2xs"
             >
               <option value="newest">🕒 Newest first</option>
               <option value="oldest">⏳ Oldest first</option>
@@ -636,15 +634,15 @@ export default function App() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 text-center text-xs text-slate-400 font-medium flex items-center justify-center gap-3 py-4">
+        <footer className="mt-12 text-center text-xs text-slate-600 font-bold flex items-center justify-center gap-3 py-4">
           <span>
             Total {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'} • {doneTasks.length} completed
           </span>
           {currentUser && (
             <>
               <span>•</span>
-              <span className="text-slate-500">
-                Signed in as <strong className="font-semibold text-slate-700">{currentUser.email || currentUser.displayName}</strong>
+              <span className="text-slate-800">
+                Signed in as <strong className="font-extrabold text-slate-950">{currentUser.email || currentUser.displayName}</strong>
               </span>
             </>
           )}
