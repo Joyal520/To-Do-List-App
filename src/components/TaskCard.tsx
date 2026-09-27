@@ -9,10 +9,7 @@ import {
   Tag,
   Edit3,
   Check,
-  AlignLeft,
   AlertTriangle,
-  Flame,
-  CheckCircle2,
 } from 'lucide-react';
 import { formatDueDate, formatCreatedDate } from '../utils/date';
 import { fireConfetti } from '../utils/confetti';
@@ -117,23 +114,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const priorityConfig: Record<TaskPriority, { label: string; badge: string; dot: string }> = {
     low: {
       label: 'Low',
-      badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/40',
+      badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       dot: 'bg-emerald-500',
     },
     medium: {
       label: 'Medium',
-      badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/40',
+      badge: 'bg-amber-50 text-amber-700 border-amber-200',
       dot: 'bg-amber-500',
     },
     high: {
       label: 'High',
-      badge: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/40',
+      badge: 'bg-orange-50 text-orange-700 border-orange-200',
       dot: 'bg-orange-500',
     },
     urgent: {
       label: 'Urgent',
-      badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800/40',
-      dot: 'bg-rose-500 animate-pulse',
+      badge: 'bg-rose-50 text-rose-700 border-rose-200',
+      dot: 'bg-rose-500',
     },
   };
 
@@ -144,18 +141,18 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`group relative bg-white dark:bg-zinc-900/90 rounded-2xl p-4 border transition-all duration-200 flex flex-col justify-between gap-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${
+      className={`group bg-white rounded-xl p-3.5 border transition-all duration-150 flex flex-col justify-between gap-3 shadow-2xs hover:shadow-sm ${
         isDone
-          ? 'border-slate-200/60 dark:border-zinc-800/60 opacity-80 hover:opacity-100 bg-slate-50/50 dark:bg-zinc-900/40'
-          : 'border-slate-200/90 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700'
-      } ${isDeleting ? 'opacity-40 scale-95 pointer-events-none' : ''}`}
+          ? 'border-slate-200 bg-slate-50/60 opacity-80'
+          : 'border-slate-200 hover:border-slate-300'
+      } ${isDeleting ? 'opacity-40 pointer-events-none' : ''}`}
     >
-      {/* Top Meta Bar: Priority + Tag + Actions */}
+      {/* Top Meta Bar */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {/* Priority Chip */}
           <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${pConf.badge}`}
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold border ${pConf.badge}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${pConf.dot}`} />
             {pConf.label}
@@ -163,7 +160,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
           {/* Category Tag */}
           {task.tag && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200/60 dark:border-zinc-700/60">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
               <Tag className="w-2.5 h-2.5 opacity-60" />
               <span>{task.tag}</span>
             </span>
@@ -172,12 +169,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           {/* Due Date Alert */}
           {dueDateInfo.text && (
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border ${
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${
                 dueDateInfo.isOverdue
-                  ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800/50'
+                  ? 'bg-rose-50 text-rose-700 border-rose-200'
                   : dueDateInfo.isToday
-                  ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-800/50'
-                  : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border-slate-200/60 dark:border-zinc-700/60'
+                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                  : 'bg-slate-100 text-slate-600 border-slate-200'
               }`}
             >
               {dueDateInfo.isOverdue ? (
@@ -190,13 +187,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           )}
         </div>
 
-        {/* Action icons (Edit & Delete) */}
-        <div className="flex items-center gap-1 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Action icons */}
+        <div className="flex items-center gap-1">
           {onEdit && (
             <button
               onClick={() => onEdit(task)}
-              title="Edit full task details"
-              className="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition-colors cursor-pointer"
+              title="Edit task"
+              className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5" />
             </button>
@@ -206,87 +203,84 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             onClick={handleDelete}
             disabled={isDeleting}
             title="Delete task"
-            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 transition-colors cursor-pointer"
+            className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Task Body: Checkbox + Title + Description */}
+      {/* Task Body */}
       <div className="flex items-start gap-2.5">
-        {/* Quick Done Checkbox */}
+        {/* Checkbox */}
         <button
           type="button"
           onClick={handleToggleComplete}
           disabled={isMoving}
-          title={isDone ? 'Mark as active' : 'Mark as done'}
-          className={`mt-0.5 w-5 h-5 rounded-lg flex items-center justify-center transition-all cursor-pointer shrink-0 border ${
+          title={isDone ? 'Mark active' : 'Mark done'}
+          className={`mt-0.5 w-4.5 h-4.5 rounded flex items-center justify-center transition-all cursor-pointer shrink-0 border ${
             isDone
-              ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
-              : 'border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-transparent hover:text-emerald-500'
+              ? 'bg-emerald-600 text-white border-emerald-600'
+              : 'border-slate-300 bg-white hover:border-emerald-500 text-transparent hover:text-emerald-600'
           }`}
         >
-          <Check className="w-3.5 h-3.5 stroke-[3]" />
+          <Check className="w-3 h-3 stroke-[3]" />
         </button>
 
-        {/* Title / Inline edit */}
+        {/* Title */}
         <div className="flex-1 min-w-0">
           {isEditingInline ? (
-            <div className="flex items-center gap-1.5">
-              <input
-                type="text"
-                autoFocus
-                value={inlineTitle}
-                onChange={(e) => setInlineTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleInlineSave();
-                  if (e.key === 'Escape') {
-                    setIsEditingInline(false);
-                    setInlineTitle(task.title);
-                  }
-                }}
-                onBlur={handleInlineSave}
-                className="w-full px-2 py-1 text-sm bg-slate-50 dark:bg-zinc-800 border border-indigo-400 rounded-lg text-slate-900 dark:text-zinc-100 focus:outline-none"
-              />
-            </div>
+            <input
+              type="text"
+              autoFocus
+              value={inlineTitle}
+              onChange={(e) => setInlineTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleInlineSave();
+                if (e.key === 'Escape') {
+                  setIsEditingInline(false);
+                  setInlineTitle(task.title);
+                }
+              }}
+              onBlur={handleInlineSave}
+              className="w-full px-2 py-1 text-sm bg-slate-50 border border-indigo-400 rounded text-slate-900 focus:outline-none"
+            />
           ) : (
             <p
               onDoubleClick={() => setIsEditingInline(true)}
               className={`text-sm font-medium leading-snug break-words cursor-pointer ${
                 isDone
-                  ? 'line-through text-slate-400 dark:text-zinc-500'
-                  : 'text-slate-800 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors'
+                  ? 'line-through text-slate-400'
+                  : 'text-slate-800 hover:text-indigo-600 transition-colors'
               }`}
             >
               {task.title}
             </p>
           )}
 
-          {/* Description snippet if present */}
           {task.description && (
-            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+            <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
               {task.description}
             </p>
           )}
         </div>
       </div>
 
-      {/* Footer: Date & Movement Controls */}
-      <div className="pt-2.5 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-zinc-500 select-none">
-          <Clock className="w-3 h-3 opacity-60" />
+      {/* Footer */}
+      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 text-[11px] text-slate-400 select-none">
+          <Clock className="w-3 h-3" />
           <span>{formatCreatedDate(task.createdAt)}</span>
         </div>
 
-        {/* Stepper Controls */}
+        {/* Movement Controls */}
         <div className="flex items-center gap-1.5">
           {prevStatus && (
             <button
               onClick={handlePrev}
               disabled={isMoving}
               title={`Move to ${prevStatus === 'todo' ? 'To Do' : 'In Progress'}`}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:text-zinc-300 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3 h-3" />
               <span className="hidden sm:inline">Back</span>
@@ -298,7 +292,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               onClick={handleNext}
               disabled={isMoving}
               title={`Move to ${nextStatus === 'in-progress' ? 'In Progress' : 'Done'}`}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg transition-all shadow-xs cursor-pointer ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded transition-colors shadow-2xs cursor-pointer ${
                 nextStatus === 'done'
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                   : 'bg-indigo-600 hover:bg-indigo-700 text-white'
