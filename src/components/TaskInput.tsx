@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Plus, Loader2, Flag, Tag, Calendar, X, CheckSquare2 } from 'lucide-react';
+import { Plus, Loader2, Flag, Tag, Calendar, Sparkles, X } from 'lucide-react';
 import { TaskPriority, TaskStatus } from '../types';
 
 interface TaskInputProps {
@@ -47,28 +47,48 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
     }
   };
 
-  const priorityConfig: Record<TaskPriority, { label: string; bg: string; text: string; dot: string }> = {
-    low: { label: 'Low', bg: 'bg-emerald-50 border-emerald-200 text-emerald-700', dot: 'bg-emerald-500' },
-    medium: { label: 'Medium', bg: 'bg-amber-50 border-amber-200 text-amber-800', dot: 'bg-amber-500' },
-    high: { label: 'High', bg: 'bg-orange-50 border-orange-200 text-orange-800', dot: 'bg-orange-500' },
-    urgent: { label: 'Urgent', bg: 'bg-rose-50 border-rose-200 text-rose-800', dot: 'bg-rose-500' },
+  const priorityConfig: Record<TaskPriority, { label: string; activeClass: string; dot: string }> = {
+    low: {
+      label: 'Low',
+      activeClass: 'bg-emerald-500/15 text-emerald-800 border-emerald-500/30 shadow-xs',
+      dot: 'bg-emerald-500',
+    },
+    medium: {
+      label: 'Medium',
+      activeClass: 'bg-amber-500/15 text-amber-800 border-amber-500/30 shadow-xs',
+      dot: 'bg-amber-500',
+    },
+    high: {
+      label: 'High',
+      activeClass: 'bg-orange-500/15 text-orange-800 border-orange-500/30 shadow-xs',
+      dot: 'bg-orange-500',
+    },
+    urgent: {
+      label: 'Urgent',
+      activeClass: 'bg-rose-500/15 text-rose-800 border-rose-500/30 shadow-xs',
+      dot: 'bg-rose-500 animate-pulse',
+    },
   };
 
   return (
     <div className="w-full max-w-3xl mx-auto mb-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl border border-slate-200 shadow-xs p-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+        className="glass-card rounded-2xl border border-white/90 p-3 sm:p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgb(0,0,0,0.06)] transition-all duration-200"
       >
         {/* Main Input Row */}
         <div className="flex items-center gap-2.5">
+          <div className="pl-2 text-indigo-600">
+            <Sparkles className="w-5 h-5 opacity-80" />
+          </div>
+
           <input
             ref={inputRef}
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Add a new task (e.g. Update website hero, Review invoice)..."
-            className="flex-1 px-3 py-2 bg-transparent text-slate-900 placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none"
+            placeholder="Add a new task (e.g. Design homepage hero, Review PR)..."
+            className="flex-1 px-3 py-2.5 bg-slate-50/70 focus:bg-white rounded-xl text-slate-900 placeholder-slate-400 text-sm sm:text-base font-medium border border-slate-200/70 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs"
             disabled={isSubmitting}
             autoFocus
           />
@@ -76,7 +96,7 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
           <button
             type="submit"
             disabled={!title.trim() || isSubmitting}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-xs transition-colors cursor-pointer disabled:cursor-not-allowed shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 disabled:from-slate-200 disabled:to-slate-200 disabled:text-slate-400 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs hover:shadow-md transition-all active:scale-[0.98] cursor-pointer disabled:cursor-not-allowed shrink-0"
           >
             {isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -89,11 +109,13 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
           </button>
         </div>
 
-        {/* Options Row: Priority, Tags, Due Date */}
-        <div className="mt-2.5 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
-          {/* Priority selector */}
+        {/* Options Row */}
+        <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+          {/* Priority selector pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-slate-500 font-semibold text-[11px] mr-0.5">Priority:</span>
+            <span className="text-slate-400 font-semibold flex items-center gap-1 text-[11px]">
+              <Flag className="w-3 h-3 text-slate-400" /> Priority:
+            </span>
             {(['low', 'medium', 'high', 'urgent'] as TaskPriority[]).map((p) => {
               const isSelected = priority === p;
               return (
@@ -101,10 +123,10 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
                   type="button"
                   key={p}
                   onClick={() => setPriority(p)}
-                  className={`px-2.5 py-1 rounded-md border text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-2.5 py-1 rounded-full border text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     isSelected
-                      ? `${priorityConfig[p].bg} font-semibold shadow-2xs`
-                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      ? `${priorityConfig[p].activeClass}`
+                      : 'border-slate-200/80 bg-white/60 text-slate-600 hover:bg-white hover:text-slate-900'
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${priorityConfig[p].dot}`} />
@@ -123,10 +145,10 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
                   type="button"
                   key={t}
                   onClick={() => setTag(tag === t ? '' : t)}
-                  className={`px-2 py-0.5 text-[11px] font-medium rounded-md transition-colors cursor-pointer ${
+                  className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-colors cursor-pointer border ${
                     tag === t
-                      ? 'bg-indigo-600 text-white font-semibold'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-indigo-600 text-white border-indigo-600 font-semibold shadow-2xs'
+                      : 'bg-white/80 border-slate-200/80 text-slate-600 hover:bg-white hover:text-slate-900'
                   }`}
                 >
                   #{t}
@@ -135,7 +157,7 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
             </div>
 
             {/* Custom Tag Input */}
-            <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-md px-2 py-1">
+            <div className="flex items-center gap-1 bg-white/80 border border-slate-200/80 rounded-full px-2.5 py-1 shadow-2xs">
               <Tag className="w-3 h-3 text-slate-400" />
               <input
                 type="text"
@@ -146,8 +168,8 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
               />
             </div>
 
-            {/* Due Date */}
-            <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-md px-2 py-1">
+            {/* Due Date Picker */}
+            <div className="flex items-center gap-1 bg-white/80 border border-slate-200/80 rounded-full px-2.5 py-1 shadow-2xs">
               <Calendar className="w-3 h-3 text-slate-400" />
               <input
                 type="date"
@@ -159,7 +181,7 @@ export const TaskInput: React.FC<TaskInputProps> = ({ onAddTask, defaultStatus =
                 <button
                   type="button"
                   onClick={() => setDueDate('')}
-                  className="text-slate-400 hover:text-rose-500"
+                  className="text-slate-400 hover:text-rose-500 ml-0.5"
                   title="Clear date"
                 >
                   <X className="w-3 h-3" />

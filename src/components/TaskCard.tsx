@@ -110,27 +110,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     setIsEditingInline(false);
   };
 
-  // Priority badge styling
+  // Soft low-saturation glass priority badges
   const priorityConfig: Record<TaskPriority, { label: string; badge: string; dot: string }> = {
     low: {
       label: 'Low',
-      badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      badge: 'bg-emerald-500/10 text-emerald-800 border-emerald-500/20',
       dot: 'bg-emerald-500',
     },
     medium: {
       label: 'Medium',
-      badge: 'bg-amber-50 text-amber-700 border-amber-200',
+      badge: 'bg-amber-500/10 text-amber-800 border-amber-500/20',
       dot: 'bg-amber-500',
     },
     high: {
       label: 'High',
-      badge: 'bg-orange-50 text-orange-700 border-orange-200',
+      badge: 'bg-orange-500/10 text-orange-800 border-orange-500/20',
       dot: 'bg-orange-500',
     },
     urgent: {
       label: 'Urgent',
-      badge: 'bg-rose-50 text-rose-700 border-rose-200',
-      dot: 'bg-rose-500',
+      badge: 'bg-rose-500/10 text-rose-800 border-rose-500/20',
+      dot: 'bg-rose-500 animate-pulse',
     },
   };
 
@@ -141,18 +141,18 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`group bg-white rounded-xl p-3.5 border transition-all duration-150 flex flex-col justify-between gap-3 shadow-2xs hover:shadow-sm ${
+      className={`group relative bg-white/88 backdrop-blur-md rounded-2xl p-4 border transition-all duration-200 flex flex-col justify-between gap-3.5 shadow-[0_4px_20px_-2px_rgba(31,38,135,0.04)] hover:shadow-[0_12px_28px_-4px_rgba(31,38,135,0.08)] hover:-translate-y-0.5 hover:bg-white/96 ${
         isDone
-          ? 'border-slate-200 bg-slate-50/60 opacity-80'
-          : 'border-slate-200 hover:border-slate-300'
-      } ${isDeleting ? 'opacity-40 pointer-events-none' : ''}`}
+          ? 'border-white/80 bg-white/60 opacity-80 shadow-none'
+          : 'border-white/95'
+      } ${isDeleting ? 'opacity-40 pointer-events-none scale-98' : ''}`}
     >
       {/* Top Meta Bar */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
-          {/* Priority Chip */}
+          {/* Priority Pill */}
           <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold border ${pConf.badge}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${pConf.badge}`}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${pConf.dot}`} />
             {pConf.label}
@@ -160,40 +160,40 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
           {/* Category Tag */}
           {task.tag && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-              <Tag className="w-2.5 h-2.5 opacity-60" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100/80 text-slate-600 border border-slate-200/60">
+              <Tag className="w-2.5 h-2.5 text-slate-400" />
               <span>{task.tag}</span>
             </span>
           )}
 
-          {/* Due Date Alert */}
+          {/* Due Date Indicator */}
           {dueDateInfo.text && (
             <span
-              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${
                 dueDateInfo.isOverdue
-                  ? 'bg-rose-50 text-rose-700 border-rose-200'
+                  ? 'bg-rose-500/10 text-rose-800 border-rose-500/20'
                   : dueDateInfo.isToday
-                  ? 'bg-amber-50 text-amber-700 border-amber-200'
-                  : 'bg-slate-100 text-slate-600 border-slate-200'
+                  ? 'bg-amber-500/10 text-amber-800 border-amber-500/20'
+                  : 'bg-slate-100/80 text-slate-600 border-slate-200/60'
               }`}
             >
               {dueDateInfo.isOverdue ? (
                 <AlertTriangle className="w-2.5 h-2.5 text-rose-500" />
               ) : (
-                <Calendar className="w-2.5 h-2.5 opacity-60" />
+                <Calendar className="w-2.5 h-2.5 text-slate-400" />
               )}
               <span>{dueDateInfo.text}</span>
             </span>
           )}
         </div>
 
-        {/* Action icons */}
-        <div className="flex items-center gap-1">
+        {/* Action Controls */}
+        <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
           {onEdit && (
             <button
               onClick={() => onEdit(task)}
               title="Edit task"
-              className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/70 transition-colors cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5" />
             </button>
@@ -203,25 +203,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             onClick={handleDelete}
             disabled={isDeleting}
             title="Delete task"
-            className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50/70 transition-colors cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Task Body */}
-      <div className="flex items-start gap-2.5">
-        {/* Checkbox */}
+      {/* Task Content */}
+      <div className="flex items-start gap-3">
+        {/* Instant Circular Checkbox */}
         <button
           type="button"
           onClick={handleToggleComplete}
           disabled={isMoving}
-          title={isDone ? 'Mark active' : 'Mark done'}
-          className={`mt-0.5 w-4.5 h-4.5 rounded flex items-center justify-center transition-all cursor-pointer shrink-0 border ${
+          title={isDone ? 'Mark as incomplete' : 'Mark as completed'}
+          className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 border ${
             isDone
-              ? 'bg-emerald-600 text-white border-emerald-600'
-              : 'border-slate-300 bg-white hover:border-emerald-500 text-transparent hover:text-emerald-600'
+              ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
+              : 'border-slate-300 bg-white hover:border-emerald-500 text-transparent hover:text-emerald-500 shadow-2xs'
           }`}
         >
           <Check className="w-3 h-3 stroke-[3]" />
@@ -243,15 +243,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 }
               }}
               onBlur={handleInlineSave}
-              className="w-full px-2 py-1 text-sm bg-slate-50 border border-indigo-400 rounded text-slate-900 focus:outline-none"
+              className="w-full px-2.5 py-1 text-sm bg-white border border-indigo-400 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-100 shadow-2xs"
             />
           ) : (
             <p
               onDoubleClick={() => setIsEditingInline(true)}
-              className={`text-sm font-medium leading-snug break-words cursor-pointer ${
+              className={`text-sm font-semibold leading-relaxed break-words cursor-pointer ${
                 isDone
-                  ? 'line-through text-slate-400'
-                  : 'text-slate-800 hover:text-indigo-600 transition-colors'
+                  ? 'line-through text-slate-400 font-normal'
+                  : 'text-slate-900 hover:text-indigo-600 transition-colors'
               }`}
             >
               {task.title}
@@ -259,28 +259,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           )}
 
           {task.description && (
-            <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
+            <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed font-normal">
               {task.description}
             </p>
           )}
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 text-[11px] text-slate-400 select-none">
-          <Clock className="w-3 h-3" />
+      {/* Footer Meta & Stepper */}
+      <div className="pt-2.5 border-t border-slate-100/80 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 select-none">
+          <Clock className="w-3 h-3 text-slate-400" />
           <span>{formatCreatedDate(task.createdAt)}</span>
         </div>
 
-        {/* Movement Controls */}
+        {/* Stepper Movement Controls */}
         <div className="flex items-center gap-1.5">
           {prevStatus && (
             <button
               onClick={handlePrev}
               disabled={isMoving}
               title={`Move to ${prevStatus === 'todo' ? 'To Do' : 'In Progress'}`}
-              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-600 bg-slate-100/80 hover:bg-slate-200/80 hover:text-slate-900 rounded-lg transition-colors cursor-pointer border border-slate-200/40"
             >
               <ArrowLeft className="w-3 h-3" />
               <span className="hidden sm:inline">Back</span>
@@ -292,10 +292,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               onClick={handleNext}
               disabled={isMoving}
               title={`Move to ${nextStatus === 'in-progress' ? 'In Progress' : 'Done'}`}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded transition-colors shadow-2xs cursor-pointer ${
+              className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-lg transition-all shadow-xs hover:shadow cursor-pointer ${
                 nextStatus === 'done'
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                  : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white'
+                  : 'bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 text-white'
               }`}
             >
               <span className="hidden sm:inline">
